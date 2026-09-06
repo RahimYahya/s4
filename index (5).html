@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SET 4 - Kuiz Interaktif PKSK | SK Kampong Pasir</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0fdf4 100%);
+            min-height: 100vh;
+        }
+        .custom-glass {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .option-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .option-btn:hover {
+            transform: translateY(-2px);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="text-slate-800 flex flex-col min-h-screen">
+
+    <header class="bg-white/80 backdrop-blur border-b border-slate-200 sticky top-0 z-10 shadow-sm">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-teal-600 text-white p-2 rounded-lg shadow">
+                    <i class="fa-solid fa-graduation-cap text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-base sm:text-lg font-bold text-teal-900 leading-tight">SET 4: KUIZ INTERAKTIF PKSK</h1>
+                    <p class="text-xs text-slate-500 font-medium">Bahagian B: Kecerdasan Intelek | SK Kampong Pasir</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <div id="quiz-status-bar" class="hidden flex items-center space-x-2 text-sm font-semibold">
+                    <span class="bg-teal-50 text-teal-700 px-3 py-1 rounded-full border border-teal-200" id="timer-display">
+                        <i class="fa-regular fa-clock mr-1"></i> 00:00
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-4xl w-full mx-auto p-4 sm:p-6 flex flex-col justify-center">
+
+        <section id="screen-start" class="custom-glass rounded-2xl p-6 sm:p-10 shadow-xl border border-slate-100">
+            <div class="text-center max-w-2xl mx-auto mb-8">
+                <div class="inline-flex items-center space-x-2 bg-teal-100 text-teal-800 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider mb-2">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span>SET 4</span>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-800">Kuiz Interaktif PKSK</h2>
+                <p class="text-teal-700 font-semibold text-base mt-1">Bahagian B : Kecerdasan Intelek</p>
+                <p class="text-slate-500 text-xs mt-1">SK Kampong Pasir</p>
+            </div>
+
+            <div class="bg-slate-50 p-4 rounded-xl mb-6 text-sm text-slate-600 border border-slate-200">
+                <h3 class="font-bold text-slate-700 mb-2 flex items-center">
+                    <i class="fa-solid fa-circle-info text-teal-600 mr-2"></i> Format & Panduan Ujian (SET 4):
+                </h3>
+                <ul class="list-disc list-inside space-y-1">
+                    <li>Mengandungi <span class="font-bold text-teal-700">70 Soalan Objektif Baharu</span> (Pilihan A, B, C, D).</li>
+                    <li>Merangkumi IQ, BM, BI, Sains, Matematik (Termasuk Soalan KBAT Aras Sukar), Teknologi & Pengetahuan Am.</li>
+                    <li>Soalan akan disusun secara **rawak** setiap kali menduduki kuiz.</li>
+                    <li>Skor akhir dan semakan kesalahan akan dipaparkan di hujung kuiz.</li>
+                </ul>
+            </div>
+
+            <form id="student-form" onsubmit="startQuiz(event)" class="space-y-4 max-w-md mx-auto">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1" for="student-name">Nama Penuh Murid <span class="text-red-500">*</span></label>
+                    <input type="text" id="student-name" required placeholder="Contoh: Muhammad Ali bin Ahmad" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1" for="school-name">Nama Sekolah <span class="text-red-500">*</span></label>
+                    <input type="text" id="school-name" required value="SK Kampong Pasir" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition">
+                </div>
+                <button type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition duration-200 flex items-center justify-center space-x-2">
+                    <span>Mula Menjawab Set 4</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+        </section>
+
+        <section id="screen-quiz" class="hidden space-y-6">
+            <!-- Progress Bar -->
+            <div class="custom-glass rounded-xl p-4 shadow-sm">
+                <div class="flex justify-between items-center text-sm font-semibold mb-2">
+                    <span id="question-tracker" class="text-teal-700">Soalan 1 daripada 70</span>
+                    <span id="category-badge" class="bg-indigo-100 text-indigo-800 text-xs px-2.5 py-1 rounded-full">Matematik</span>
+                </div>
+                <div class="w-full bg-slate-200 rounded-full h-2.5">
+                    <div id="progress-bar" class="bg-teal-600 h-2.5 rounded-full transition-all duration-300" style="width: 1.4%"></div>
+                </div>
+            </div>
+
+            <!-- Card Soalan -->
+            <div class="custom-glass rounded-2xl p-6 sm:p-8 shadow-xl border border-slate-100">
+                <div class="mb-6">
+                    <h3 id="question-text" class="text-base sm:text-lg font-semibold text-slate-800 leading-relaxed">
+                        Loading soalan...
+                    </h3>
+                </div>
+
+                <!-- Pilihan Jawapan -->
+                <div id="options-container" class="grid grid-cols-1 gap-3">
+                    <!-- Dynamic Buttons Generated via JS -->
+                </div>
+
+                <!-- Navigasi Bawah -->
+                <div class="mt-8 pt-4 border-t border-slate-100 flex justify-between items-center">
+                    <button id="prev-btn" onclick="navigateQuestion(-1)" class="px-4 py-2 text-slate-500 hover:text-slate-800 font-medium text-sm rounded-lg hover:bg-slate-100 transition flex items-center">
+                        <i class="fa-solid fa-chevron-left mr-2"></i> Sebelumnya
+                    </button>
+                    <button id="next-btn" onclick="navigateQuestion(1)" class="px-6 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-semibold text-sm rounded-lg shadow transition flex items-center">
+                        Seterusnya <i class="fa-solid fa-chevron-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="screen-result" class="hidden space-y-6">
+            <div class="custom-glass rounded-2xl p-6 sm:p-10 shadow-xl border border-slate-100 text-center">
+                <div class="w-20 h-20 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-inner">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-800">Tahniah! Anda Selesai SET 4.</h2>
+                <p class="text-slate-500 text-sm mt-1" id="res-student-info">Nama Murid | Sekolah</p>
+
+                <!-- Paparan Skor Utama -->
+                <div class="my-6 bg-gradient-to-r from-teal-500 to-emerald-600 text-white p-6 rounded-2xl shadow-lg inline-block w-full max-w-sm">
+                    <p class="text-xs font-uppercase tracking-wider opacity-90">SKOR KESELURUHAN (SET 4)</p>
+                    <div class="text-4xl sm:text-5xl font-extrabold my-2">
+                        <span id="final-score">0</span> <span class="text-2xl font-normal opacity-80">/ 70</span>
+                    </div>
+                    <p class="text-xs bg-white/20 rounded-full py-1 px-3 inline-block font-medium" id="score-percentage">0% Marks</p>
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-4 mt-2">
+                    <button onclick="openReviewModal()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm rounded-lg shadow transition flex items-center">
+                        <i class="fa-solid fa-magnifying-glass mr-2"></i> Semak Kesalahan / Jawapan
+                    </button>
+                    <button onclick="resetAndRestart()" class="px-5 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-semibold text-sm rounded-lg shadow transition flex items-center">
+                        <i class="fa-solid fa-rotate-right mr-2"></i> Cuba Lagi (Soalan Rawak)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Papan Skor Top 10 -->
+            <div class="custom-glass rounded-2xl p-6 shadow-xl border border-slate-100">
+                <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
+                    <i class="fa-solid fa-award text-amber-500 mr-2"></i> Top 10 Kedudukan Terbaik (SET 4)
+                </h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                <th class="py-3 px-2 text-center">#</th>
+                                <th class="py-3 px-3">Nama Murid</th>
+                                <th class="py-3 px-3">Sekolah</th>
+                                <th class="py-3 px-3 text-center">Skor</th>
+                                <th class="py-3 px-3 text-center">Masa</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-body" class="text-sm divide-y divide-slate-100">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="review-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl w-full max-w-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 bg-slate-800 text-white flex justify-between items-center">
+                <h3 class="font-bold text-lg flex items-center">
+                    <i class="fa-solid fa-clipboard-check text-teal-400 mr-2"></i> Semakan Kesalahan & Jawapan - SET 4
+                </h3>
+                <button onclick="closeReviewModal()" class="text-slate-400 hover:text-white text-xl">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <!-- Modal Filter & Body -->
+            <div class="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center text-sm">
+                <span id="review-summary-text" class="font-medium text-slate-600">Menunjukkan soalan...</span>
+                <select id="review-filter" onchange="renderReviewList()" class="border border-slate-300 rounded-md px-2 py-1 text-xs">
+                    <option value="all">Semua Soalan (70)</option>
+                    <option value="wrong">Soalan Salah Sahaja</option>
+                    <option value="correct">Soalan Betul Sahaja</option>
+                </select>
+            </div>
+            <div id="review-list" class="p-6 overflow-y-auto space-y-6 flex-grow">
+                <!-- Items populated via JS -->
+            </div>
+            <!-- Modal Footer -->
+            <div class="p-4 bg-slate-100 border-t border-slate-200 text-right">
+                <button onclick="closeReviewModal()" class="px-5 py-2 bg-slate-700 hover:bg-slate-800 text-white text-sm font-semibold rounded-lg">
+                    Tutup Semakan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 text-xs text-slate-500 border-t border-slate-200 bg-white/50">
+        SK Kampong Pasir &copy; 2026 - SET 4 Modul Persediaan PKSK Tahun 6
+    </footer>
+
+    <script>
+        const LEADERBOARD_KEY = 'pksk-set4-leaderboard';
+        let allSubmissions = JSON.parse(localStorage.getItem(LEADERBOARD_KEY) || '[]');
+
+        function saveSubmissionToCloud(name, school, score, timeInSec) {
+            const entry = { name, school, score, percentage: Math.round((score / 70) * 100), time: timeInSec, createdAt: Date.now(), dateStr: new Date().toLocaleDateString('ms-MY', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'}) };
+            allSubmissions.push(entry);
+            allSubmissions.sort((a,b) => b.score !== a.score ? b.score-a.score : a.time !== b.time ? a.time-b.time : (b.createdAt||0)-(a.createdAt||0));
+            allSubmissions = allSubmissions.slice(0,50);
+            localStorage.setItem(LEADERBOARD_KEY, JSON.stringify(allSubmissions));
+            renderLeaderboardFromCloud();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => renderLeaderboardFromCloud());
+
+        const questionBank = [
+            // --- IQ / LOGIK CORAK (10 Soalan) ---
+            { category: "IQ & Logik", question: "Apakah nombor seterusnya dalam jujukan ini: 4, 9, 19, 39, ...?", options: ["69", "78", "79", "89"], answer: 2, explanation: "Pola nombor ialah darab 2 kemudian tambah 1: (39 x 2) + 1 = 79." },
+            { category: "IQ & Logik", question: "Ikan : Insang :: Manusia : ...?", options: ["Jantung", "Paru-paru", "Hati", "Kulit"], answer: 1, explanation: "Ikan bernafas menggunakan insang, manakala organ pernafasan utama manusia ialah paru-paru." },
+            { category: "IQ & Logik", question: "Pilih objek yang TIDAK tergolong dalam kumpulan yang sama:", options: ["Prisma", "Piramid", "Sfera", "Segi Empat Tepat"], answer: 3, explanation: "Segi empat tepat ialah bentuk 2D, manakala yang lain merupakan bentuk 3D." },
+            { category: "IQ & Logik", question: "Jika KEPERLUAN diwakili nombor 123456789, huruf apakah yang diwakili nombor 6?", options: ["L", "U", "R", "E"], answer: 0, explanation: "Susunan huruf K-E-P-E-R-L-U-A-N menunjukkan huruf ke-6 ialah 'L'." },
+            { category: "IQ & Logik", question: "Apakah nombor seterusnya dalam jujukan: 100, 81, 64, 49, ...?", options: ["25", "36", "38", "40"], answer: 1, explanation: "Pola nombor kuasa dua menurun: 10², 9², 8², 7², 6² = 36." },
+            { category: "IQ & Logik", question: "Semua murid rajin menghadiri kelas. Ali ialah seorang murid. Maka...", options: ["Ali tidak menghadiri kelas", "Ali rajin menghadiri kelas", "Semua yang menghadiri kelas ialah Ali", "Ali suka tidur"], answer: 1, explanation: "Melalui deduksi silogisme, Ali rajin menghadiri kelas." },
+            { category: "IQ & Logik", question: "Berapakah bilangan bucu bagi sebuah kuboid?", options: ["6", "8", "10", "12"], answer: 1, explanation: "Sebuah kuboid mempunyai 8 bucu (corner points)." },
+            { category: "IQ & Logik", question: "Jam menunjukkan pukul 4:00. Apakah sudut tirus/cagut paling kecil yang dibentuk oleh jarum jam dan jarum minit?", options: ["90 darjah", "120 darjah", "150 darjah", "180 darjah"], answer: 1, explanation: "Setiap selang 1 jam mewakili 30°. Pada pukul 4:00 = 4 x 30° = 120°." },
+            { category: "IQ & Logik", question: "Pilih nombor yang TERASING daripada kumpulan berikut: 2, 3, 5, 9, 11.", options: ["3", "5", "9", "11"], answer: 2, explanation: "9 bukan nombor perdana (kerana 3x3=9), manakala nombor lain ialah nombor perdana." },
+            { category: "IQ & Logik", question: "Jika semalam ialah hari Jumaat, hari apakah lusa?", options: ["Sabtu", "Ahad", "Isnin", "Selasa"], answer: 2, explanation: "Semalam = Jumaat -> Hari ini = Sabtu -> Esok = Ahad -> Lusa = Isnin." },
+
+            // --- BAHASA MELAYU (10 Soalan) ---
+            { category: "Bahasa Melayu", question: "Pilih kata ganda berentak pengulangan vokal yang betul: Suasana di rumah nenek bertambah ... apabila semua cucu berkumpul.", options: ["riuh-rendah", "senang-lenang", "saling-silang", "hiruk-pikuk"], answer: 0, explanation: "'Riuh-rendah' merujuk kepada suasana bising yang meriah dengan suara bual dan ketawa orang ramai." },
+            { category: "Bahasa Melayu", question: "Apakah maksud peribahasa 'Umpama sirih pulang ke gagang'?", options: ["Seseorang yang balik ke tempat asalnya", "Tumbuhan sirih yang semakin subur", "Orang yang tidak bersyukur", "Membuat kerja yang sia-sia"], answer: 0, explanation: "Peribahasa ini bermaksud merujuk kepada seseorang yang kembali ke tempat asalnya." },
+            { category: "Bahasa Melayu", question: "Pilih ayat yang menggunakan Kata Pemeri 'ialah' dengan BETUL.", options: ["Hobi beliau ialah membaca buku.", "Makanan itu ialah sangat sedap.", "Rumah itu ialah besar.", "Beliau ialah bekerja sebagai doktor."], answer: 0, explanation: "Kata pemeri 'ialah' digunakan di hadapan kata nama atau frasa nama ('membaca buku')." },
+            { category: "Bahasa Melayu", question: "Antara berikut, perkataan manakah yang merupakan Kata Adjektif Perasaan?", options: ["Tinggi", "Rindu", "Bulat", "Harum"], answer: 1, explanation: "'Rindu' ialah kata adjektif perasaan." },
+            { category: "Bahasa Melayu", question: "Apakah sinonim (sama maksud) bagi perkataan 'Dahsyat'?", options: ["Hebat / Mengerikan", "Kecil", "Perlahan", "Tenang"], answer: 0, explanation: "'Dahsyat' membawa maksud sangat hebat atau mengerikan." },
+            { category: "Bahasa Melayu", question: "Pihak kerajaan telah ... langkah drastik untuk menangani isu banjir.", options: ["mengambil", "menjalankan", "mengamalkan", "mengendalikan"], answer: 0, explanation: "Frasa lazim yang tepat ialah 'mengambil langkah'." },
+            { category: "Bahasa Melayu", question: "Penjodoh bilangan 'rangkap' sesuai digunakan untuk ...", options: ["pantun / puisi", "baju", "pisang", "kertas"], answer: 0, explanation: "Penjodoh bilangan 'rangkap' digunakan untuk bait pantun atau puisi." },
+            { category: "Bahasa Melayu", question: "Simpulan bahasa 'Telinga Lintah' bermaksud ...", options: ["Pekak", "Mempunyai pendengaran yang sangat tajam", "Suka mendengar gosip", "Telinga yang besar"], answer: 1, explanation: "'Telinga lintah' bermaksud tajam pendengaran dan mudah mendengar walaupun suara perlahan." },
+            { category: "Bahasa Melayu", question: "Pilih ejaan yang BETUL mengikut DBP.", options: ["Aturcara", "Atur cara", "Atur-cara", "AturCara"], answer: 1, explanation: "Mengikut DBP, ejaan yang betul dijarakkan: 'atur cara'." },
+            { category: "Bahasa Melayu", question: "Pilih ayat yang mengandungi Kata Hubung Gabungan.", options: ["Siti dan Aminah belajar bersama-sama.", "Kucing yang comel itu tidur.", "Beliau tidak hadir kerana sakit.", "Adik menangis apabila ibu keluar."], answer: 0, explanation: "'dan' ialah kata hubung gabungan." },
+
+            // --- BAHASA INGGERIS (10 Soalan) ---
+            { category: "Bahasa Inggeris", question: "Choose the correct sentence using Past Continuous Tense.", options: ["They were playing football when it rained.", "They play football when it rained.", "They has played football when it rained.", "They are play football when it rained."], answer: 0, explanation: "Past Continuous Tense uses 'were/was + verb-ing' (were playing)." },
+            { category: "Bahasa Inggeris", question: "What is the antonym of 'Generous'?", options: ["Kind", "Mean / Stingy", "Polite", "Friendly"], answer: 1, explanation: "The opposite of generous (suka memberi) is stingy/mean (kedekut)." },
+            { category: "Bahasa Inggeris", question: "Fill in the blank: Either Sivaraj or his brothers ___ going to repair the bicycle.", options: ["is", "are", "was", "be"], answer: 1, explanation: "Verb agrees with the closer subject 'brothers' (plural) -> 'are'." },
+            { category: "Bahasa Inggeris", question: "Identify the prepositions in: 'The cat jumped over the fence into the garden.'", options: ["jumped, fence", "over, into", "cat, garden", "the, the"], answer: 1, explanation: "'over' and 'into' show position/direction (prepositions)." },
+            { category: "Bahasa Inggeris", question: "Choose the superlative adjective: 'Mount Everest is the ___ mountain in the world.'", options: ["high", "higher", "highest", "more high"], answer: 2, explanation: "Superlative form of 'high' is 'highest'." },
+            { category: "Bahasa Inggeris", question: "What is the collective noun for a group of bees?", options: ["Flock", "Swarm", "Pack", "Herd"], answer: 1, explanation: "A group of bees is called a 'swarm'." },
+            { category: "Bahasa Inggeris", question: "Complete the proverb: 'Better late than ...'", options: ["never", "today", "ever", "early"], answer: 0, explanation: "The proverb is 'Better late than never'." },
+            { category: "Bahasa Inggeris", question: "Find the correctly spelled word.", options: ["Privilege", "Privelege", "Priviledge", "Privlege"], answer: 0, explanation: "'Privilege' is spelled with 'i' and 'e' without 'd'." },
+            { category: "Bahasa Inggeris", question: "This is the doctor ... treated my grandfather.", options: ["which", "whose", "who", "where"], answer: 2, explanation: "'who' is used for referring to people (the doctor)." },
+            { category: "Bahasa Inggeris", question: "Choose the synonym for 'Timid'.", options: ["Brave", "Shy / Fearful", "Strong", "Bold"], answer: 1, explanation: "'Timid' means shy or lacking courage (penakut/pemalu)." },
+
+            // --- PENYELESAIAN MASALAH - MATEMATIK (10 Soalan) ---
+            { category: "Matematik", question: "Hitung: 2/5 + 1/3 × 3/5 = ...?", options: ["3/5", "1/2", "7/15", "8/15"], answer: 0, explanation: "Ikut tertib operasi (darab dulu): (1/3 × 3/5 = 1/5). Kemudian: 2/5 + 1/5 = 3/5." },
+            { category: "Matematik", question: "Tukarkan 0.65 kepada peratusan.", options: ["6.5%", "65%", "650%", "0.65%"], answer: 1, explanation: "0.65 × 100% = 65%." },
+            { category: "Matematik", question: "Berapakah sudut bagi satu putaran lengkap (bulatan penuh)?", options: ["90 darjah", "180 darjah", "270 darjah", "360 darjah"], answer: 3, explanation: "Satu putaran lengkap sudutnya ialah 360°." },
+            { category: "Matematik", question: "Sebuah segi empat sama mempunyai perimeter 36 cm. Hitung LUAS segi empat sama tersebut.", options: ["36 cm²", "81 cm²", "144 cm²", "324 cm²"], answer: 1, explanation: "Panjang sisi = 36 ÷ 4 = 9 cm. Luas = 9 × 9 = 81 cm²." },
+
+            // --- SOALAN ARAS SUKAR 1 (KBAT - Pecahan & Nisbah Bertingkat) ---
+            { category: "Matematik", question: "[ARAS SUKAR] Encik Hakimi mempunyai wang simpanan sebanyak RM12,000. Beliau memperuntukkan 1/4 daripada wangnya untuk simpanan emas dan 2/5 daripada BAKI wangnya dibahagikan kepada 3 orang anaknya secara sama rata. Berapakah jumlah wang yang diterima oleh SEORANG anaknya?", options: ["RM1,200", "RM1,500", "RM1,800", "RM3,600"], answer: 0, explanation: "Simpanan Emas = 1/4 x 12,000 = RM3,000. Baki Wang = 12,000 - 3,000 = RM9,000. Wang anak-anak = 2/5 x 9,000 = RM3,600. Seorang anak terima = 3,600 ÷ 3 = RM1,200." },
+
+            { category: "Matematik", question: "Tukarkan 4 jam 45 minit kepada minit.", options: ["245 minit", "275 minit", "285 minit", "295 minit"], answer: 2, explanation: "(4 × 60) + 45 = 240 + 45 = 285 minit." },
+
+            // --- SOALAN ARAS SUKAR 2 (KBAT - Isipadu & Ketinggian Cecair Gabungan) ---
+            { category: "Matematik", question: "[ARAS SUKAR] Sebuah tangki air berbentuk kuboid mempunyai tapak berukuran panjang 20 cm dan lebar 15 cm. Tangki itu diisi dengan 4.5 liter air. Berapakah KETINGGIAN (cm) paras air di dalam tangki tersebut? (Nota: 1 liter = 1,000 cm³)", options: ["12 cm", "15 cm", "18 cm", "20 cm"], answer: 1, explanation: "4.5 liter = 4,500 cm³. Luas tapak = 20 × 15 = 300 cm². Ketinggian paras air = Isipadu ÷ Luas Tapak = 4,500 ÷ 300 = 15 cm." },
+
+            { category: "Matematik", question: "Purata umur bagi 4 orang anak ialah 10 tahun. Apabila umur ibu mereka ditambah, purata umur menjadi 16 tahun. Berapakah umur ibu mereka?", options: ["36 tahun", "40 tahun", "42 tahun", "44 tahun"], answer: 1, explanation: "Jumlah umur 4 anak = 4 × 10 = 40. Jumlah umur 5 orang (anak+ibu) = 5 × 16 = 80. Umur ibu = 80 - 40 = 40 tahun." },
+            { category: "Matematik", question: "Cari Gandaan Sepunya Terkecil (GSTK) bagi 6, 8 dan 12.", options: ["12", "24", "36", "48"], answer: 1, explanation: "Nombor terkecil yang boleh dibahagi tepat dengan 6, 8 dan 12 ialah 24." },
+
+            // --- SOALAN ARAS SUKAR 3 (KBAT - Peratus Keuntungan & Harga Jual Bertingkat) ---
+            { category: "Matematik", question: "[ARAS SUKAR] Seorang peniaga membeli 100 biji buah mangga dengan harga RM200. Sebanyak 10% daripada buah mangga itu didapati rosak dan dibuang. Beliau menjual baki buah mangga dengan harga RM3.00 sebiji. Berapakah PERATUS KEUNTUNGAN yang diperoleh peniaga itu berdasarkan kos asalnya?", options: ["25%", "30%", "35%", "40%"], answer: 2, explanation: "Buah rosak = 10 biji. Baki elok = 90 biji. Hasil jualan = 90 × RM3 = RM270. Untung = RM270 - RM200 = RM70. Peratus Untung = (70 ÷ 200) × 100% = 35%." },
+
+            // --- PENYELESAIAN MASALAH - SAINS (10 Soalan) ---
+            { category: "Sains", question: "Apakah organ utama manusia yang mengawal semua aktiviti badan seperti berfikir dan pergerakan?", options: ["Jantung", "Otak", "Paru-paru", "Saraf"], answer: 1, explanation: "Otak merupakan pusat kawalan utama bagi sistem saraf dan seluruh badan." },
+            { category: "Sains", question: "Apakah proses perubahan keadaan bahan daripada cecair menjadi pepejal apabila dibekukan?", options: ["Peleburan", "Pembekuan", "Penyejatan", "Kondensasi"], answer: 1, explanation: "Pembekuan berlaku apabila cecair bertukar menjadi pepejal akibat penurunan suhu." },
+            { category: "Sains", question: "Hidupan yang mengurai tumbuhan dan haiwan mati menjadi nutrien tanah dinamakan ...", options: ["Pengeluar", "Pengguna Primari", "Pengurai", "Karnivor"], answer: 2, explanation: "Pengurai seperti bakteria dan kulat menguraikan bahan organik mati." },
+            { category: "Sains", question: "Sifat cahaya yang menyebabkan penyedut minuman kelihatan bengkok di dalam gelas berisi air ialah ...", options: ["Pantulan cahaya", "Pembiasan cahaya", "Cahaya bergerak lurus", "Penyerapan cahaya"], answer: 1, explanation: "Pembiasan cahaya berlaku apabila cahaya bergerak menerusi dua medium berbeza ketumpatan (udara & air)." },
+            { category: "Sains", question: "Planet manakah yang terkenal dengan gelang gergasi yang indah dalam Sistem Suria?", options: ["Marikh", "Mushtari", "Zuhal", "Uranus"], answer: 2, explanation: "Zuhal (Saturn) terkenal dengan sistem gelang ais dan batuan yang nyata." },
+            { category: "Sains", question: "Mesin ringkas yang mempunyai permukaan condong untuk memudahkan memindahkan beban ke tempat tinggi dinamakan ...", options: ["Baji", "Satah Condong", "Skru", "Roda"], answer: 1, explanation: "Satah condong landasan condong yang mengurangkan daya untuk mengangkut beban." },
+            { category: "Sains", question: "Kaedah pengawetan makanan yang menggunakan haba tinggi untuk membunuh bakteria dan ditudung kedap udara dinamakan ...", options: ["Pemasinan", "Pengetinan / Pembungkusan Vakum", "Penjerukan", "Pengeringan"], answer: 1, explanation: "Pengetinan melibatkan pemanasan tinggi dan penyimpan kedap udara." },
+            { category: "Sains", question: "Kejadian edaran Bumi mengelilingi Matahari mengambil masa ...", options: ["24 jam", "30 hari", "365 ¼ hari (1 tahun)", "100 hari"], answer: 2, explanation: "Bumi mengambil masa 365 ¼ hari untuk melengkapkan peredaran mengelilingi Matahari." },
+            { category: "Sains", question: "Daya yang menarik semua objek ke arah pusat Bumi dinamakan ...", options: ["Daya Magnet", "Daya Graviti", "Daya Geseran", "Daya Elektrik"], answer: 1, explanation: "Daya graviti memegang objek supaya tidak terapung di Bumi." },
+            { category: "Sains", question: "Bahan yang bersifat Alkali mempunyai julat nilai pH ...", options: ["Kurang daripada 7", "Tepat 7", "Lebih daripada 7", "Antara 1 hingga 5"], answer: 2, explanation: "Bahan alkali mempunyai nilai pH lebih daripada 7 (berasa licin & pahit)." },
+
+            // --- PENYELESAIAN MASALAH - TEKNOLOGI / ICT / RBT (10 Soalan) ---
+            { category: "Teknologi & RBT", question: "Antara berikut, yang manakah merupakan Peranti Output pemprosesan grafik visual?", options: ["Tetikus", "Monitor / Skrin", "Papan Kekunci", "Mikrofon"], answer: 1, explanation: "Monitor memaparkan maklumat visual (output)." },
+            { category: "Teknologi & RBT", question: "Apakah fungsi asas perisian pemprosesan kata seperti Microsoft Word?", options: ["Menaip & menyunting dokumen teks", "Mengira bajet kewangan", "Melukis 3D", "Menonton video"], answer: 0, explanation: "Microsoft Word direka khas untuk pengurusan teks dan dokumen rasmi." },
+            { category: "Teknologi & RBT", question: "Simbol 'Rombus' (Diamond) dalam Carta Alir menunjukkan ...", options: ["Proses", "Mula / Tamat", "Syarat Keputusan (Ya / Tidak)", "Input"], answer: 2, explanation: "Rombus menandakan titik keputusan atau pilihan syarat." },
+            { category: "Teknologi & RBT", question: "Apakah peranti elektronik RBT yang membenarkan arus mengalir dalam SATU arah sahaja?", options: ["Diod / LED", "Suis", "Perintang", "Buzzer"], answer: 0, explanation: "Diod (termasuk LED) hanya membenarkan aliran arus satu arah." },
+            { category: "Teknologi & RBT", question: "Apakah istilah bagi pautan teks atau imej di laman web yang membawa pengguna ke halaman lain apabila diklik?", options: ["Hyperlink", "Hardware", "Database", "Server"], answer: 0, explanation: "Hyperlink pautan interaktif yang menghubungkan dokumen web." },
+            { category: "Teknologi & RBT", question: "Apakah jenis ancaman siber yang menghantar e-mel palsu untuk mencuri maklumat perbankan?", options: ["Phishing", "Spam", "Firewall", "Backup"], answer: 0, explanation: "Phishing ialah penipuan siber untuk memancing maklumat peribadi." },
+            { category: "Teknologi & RBT", question: "Proses menghasilkan produk berfungsi mengikut reka bentuk dinamakan ...", options: ["Pembinaan Pembetungan", "Penghasilan Produk / Prototip", "Lakaran Rangka", "Pengujian Sahaja"], answer: 1, explanation: "Binaan fizikal awal mengikut spesifikasi dipanggil prototip/produk." },
+            { category: "Teknologi & RBT", question: "Apakah nama alatan tangan RBT yang digunakan untuk memotong wayar elektrik?", options: ["Pemotong Wayar / Pemotong Sisi", "Pena Ujian", "Pemutar Skru", "Gergaji"], answer: 0, explanation: "Pemotong wayar khas untuk memotong dan melepaskan penebat wayar." },
+            { category: "Teknologi & RBT", question: "Rangkaian komputer sejagat yang menghubungkan berjuta-juta peranti di seluruh dunia dinamakan ...", options: ["Internet", "Intranet", "LAN", "Bluetooth"], answer: 0, explanation: "Internet ialah rangkaian maklumat global antarabangsa." },
+            { category: "Teknologi & RBT", question: "Aplikasi blok pengaturcaraan visual mesra kanak-kanak yang diasaskan oleh MIT dinamakan ...", options: ["Scratch", "Python", "C++", "Java"], answer: 0, explanation: "Scratch ialah perisian pengaturcaraan blok popular untuk murid." },
+
+            // --- PENGETAHUAN AM (10 Soalan) ---
+            { category: "Pengetahuan Am", question: "Apakah Jambatan terpanjang di Malaysia yang menghubungkan Pulau Pinang dengan tanah besar?", options: ["Jambatan Sultan Abdul Halim Mu'adzam Shah (Jambatan Kedua)", "Jambatan Pulau Pinang Pertama", "Jambatan Johor-Singapura", "Jambatan Seri Wawasan"], answer: 0, explanation: "Jambatan Pulau Pinang Kedua (24 km) merupakan jambatan terpanjang di Malaysia." },
+            { category: "Pengetahuan Am", question: "Bunga Kebangsaan Malaysia (Bunga Raya) mempunyai berapa kelopak?", options: ["4 kelopak", "5 kelopak", "6 kelopak", "7 kelopak"], answer: 1, explanation: "Bunga Raya mempunyai 5 kelopak yang melambangkan 5 Prinsip Rukun Negara." },
+            { category: "Pengetahuan Am", question: "Siapakah Perdana Menteri Malaysia yang terkini?", options: ["Datuk Seri Anwar Ibrahim", "Tan Sri Muhyiddin Yassin", "Dato' Seri Ismail Sabri", "Tun Dr. Mahathir"], answer: 0, explanation: "Datuk Seri Anwar Ibrahim ialah Perdana Menteri Malaysia ke-10." },
+            { category: "Pengetahuan Am", question: "Apakah BENUA terluas di dunia mengikut keluasan tanah?", options: ["Benua Afrika", "Benua Asia", "Benua Amerika Utara", "Benua Eropah"], answer: 1, explanation: "Benua Asia merupakan benua terbesar di dunia." },
+            { category: "Pengetahuan Am", question: "Peristiwa pembentukan Persekutuan Malaysia berlaku pada tahun ...", options: ["1957", "1963", "1969", "1970"], answer: 1, explanation: "Malaysia dibentuk pada 16 September 1963." },
+            { category: "Pengetahuan Am", question: "Apakah ibu negeri bagi negeri Pahang?", options: ["Temerloh", "Kuantan", "Pekan", "Bentong"], answer: 1, explanation: "Kuantan ialah ibu negeri Pahang Darul Makmur." },
+            { category: "Pengetahuan Am", question: "Apakah sukan tradisional rasmi yang menggunakan buah catur kayu di atas papan berlubang?", options: ["Congkak", "Gasing", "Wau", "Sepak Takraw"], answer: 0, explanation: "Congkak ialah permainan tradisional menggunakan papan berlubang dan guli/buah." },
+            { category: "Pengetahuan Am", question: "Mata wang rasmi bagi negara Singapura ialah ...", options: ["Ringgit", "Dollar Singapura", "Rupiah", "Peso"], answer: 1, explanation: "Mata wang Singapura ialah Dollar Singapura (SGD)." },
+            { category: "Pengetahuan Am", question: "Pertubuhan Pendidikan, Sains dan Kebudayaan Bangsa-Bangsa Bersatu dikenali sebagai ...", options: ["UNESCO", "UNICEF", "WHO", "WWF"], answer: 0, explanation: "UNESCO = United Nations Educational, Scientific and Cultural Organization." },
+            { category: "Pengetahuan Am", question: "Hari Malaysia disambut pada ... setiap tahun.", options: ["31 Ogos", "16 September", "1 Mei", "25 Disember"], answer: 1, explanation: "Hari Malaysia disambut pada 16 September." }
+        ];
+
+        let currentQuestions = [];
+        let userAnswers = [];
+        let currentIndex = 0;
+        let studentName = "";
+        let schoolName = "";
+        let timerInterval = null;
+        let secondsElapsed = 0;
+
+        function shuffleArray(array) {
+            let arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function startQuiz(e) {
+            e.preventDefault();
+            studentName = document.getElementById('student-name').value.trim();
+            schoolName = document.getElementById('school-name').value.trim();
+
+            if (!studentName || !schoolName) return;
+
+            currentQuestions = shuffleArray(questionBank).map(q => {
+                const originalOptions = q.options.map((opt, idx) => ({ text: opt, isCorrect: idx === q.answer }));
+                const shuffledOptions = shuffleArray(originalOptions);
+                const newAnswerIndex = shuffledOptions.findIndex(o => o.isCorrect);
+
+                return {
+                    ...q,
+                    options: shuffledOptions.map(o => o.text),
+                    answer: newAnswerIndex
+                };
+            });
+
+            userAnswers = new Array(currentQuestions.length).fill(null);
+            currentIndex = 0;
+            secondsElapsed = 0;
+
+            document.getElementById('screen-start').classList.add('hidden');
+            document.getElementById('screen-quiz').classList.remove('hidden');
+            document.getElementById('quiz-status-bar').classList.remove('hidden');
+
+            startTimer();
+            renderQuestion();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                secondsElapsed++;
+                const mins = Math.floor(secondsElapsed / 60).toString().padStart(2, '0');
+                const secs = (secondsElapsed % 60).toString().padStart(2, '0');
+                document.getElementById('timer-display').innerHTML = `<i class="fa-regular fa-clock mr-1"></i> ${mins}:${secs}`;
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        function renderQuestion() {
+            const q = currentQuestions[currentIndex];
+            
+            document.getElementById('question-tracker').innerText = `Soalan ${currentIndex + 1} daripada ${currentQuestions.length}`;
+            document.getElementById('category-badge').innerText = q.category;
+            const progressPercent = ((currentIndex + 1) / currentQuestions.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+
+            document.getElementById('question-text').innerText = `${currentIndex + 1}. ${q.question}`;
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            const prefixes = ['A', 'B', 'C', 'D'];
+            q.options.forEach((opt, idx) => {
+                const isSelected = userAnswers[currentIndex] === idx;
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.onclick = () => selectOption(idx);
+                btn.className = `option-btn w-full text-left p-4 rounded-xl border-2 flex items-center justify-between transition ${
+                    isSelected 
+                    ? 'border-teal-600 bg-teal-50/80 text-teal-900 font-semibold shadow-sm' 
+                    : 'border-slate-200 bg-white hover:border-teal-300 text-slate-700'
+                }`;
+
+                btn.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <span class="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold ${
+                            isSelected ? 'bg-teal-600 text-white' : 'bg-slate-100 text-slate-600'
+                        }">${prefixes[idx]}</span>
+                        <span class="text-sm">${opt}</span>
+                    </div>
+                    ${isSelected ? '<i class="fa-solid fa-circle-check text-teal-600 text-lg"></i>' : ''}
+                `;
+                optionsContainer.appendChild(btn);
+            });
+
+            document.getElementById('prev-btn').style.visibility = currentIndex === 0 ? 'hidden' : 'visible';
+            const nextBtn = document.getElementById('next-btn');
+            if (currentIndex === currentQuestions.length - 1) {
+                nextBtn.innerHTML = `Hantar & Selesai <i class="fa-solid fa-check-double ml-2"></i>`;
+                nextBtn.className = "px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm rounded-lg shadow transition flex items-center";
+            } else {
+                nextBtn.innerHTML = `Seterusnya <i class="fa-solid fa-chevron-right ml-2"></i>`;
+                nextBtn.className = "px-6 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-semibold text-sm rounded-lg shadow transition flex items-center";
+            }
+        }
+
+        function selectOption(index) {
+            userAnswers[currentIndex] = index;
+            renderQuestion();
+        }
+
+        function navigateQuestion(direction) {
+            if (direction === 1 && currentIndex === currentQuestions.length - 1) {
+                finishQuiz();
+                return;
+            }
+            currentIndex += direction;
+            if (currentIndex < 0) currentIndex = 0;
+            if (currentIndex >= currentQuestions.length) currentIndex = currentQuestions.length - 1;
+            renderQuestion();
+        }
+
+        function finishQuiz() {
+            stopTimer();
+
+            let score = 0;
+            currentQuestions.forEach((q, idx) => {
+                if (userAnswers[idx] === q.answer) {
+                    score++;
+                }
+            });
+
+            playCompletionSound();
+
+            document.getElementById('screen-quiz').classList.add('hidden');
+            document.getElementById('quiz-status-bar').classList.add('hidden');
+            document.getElementById('screen-result').classList.remove('hidden');
+
+            document.getElementById('res-student-info').innerText = `${studentName} | ${schoolName}`;
+            document.getElementById('final-score').innerText = score;
+            const percentage = Math.round((score / currentQuestions.length) * 100);
+            document.getElementById('score-percentage').innerText = `${percentage}% Peratusan Ketepatan`;
+
+            saveSubmissionToCloud(studentName, schoolName, score, secondsElapsed);
+        }
+
+        function playCompletionSound() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+
+                const notes = [523.25, 659.25, 783.99, 1046.50];
+                notes.forEach((freq, idx) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.12);
+
+                    gain.gain.setValueAtTime(0.15, ctx.currentTime + idx * 0.12);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + idx * 0.12 + 0.4);
+
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    osc.start(ctx.currentTime + idx * 0.12);
+                    osc.stop(ctx.currentTime + idx * 0.12 + 0.4);
+                });
+            } catch (e) {
+                console.log("Audio play blocked or unsupported");
+            }
+        }
+
+        function renderLeaderboardFromCloud() {
+            const tbody = document.getElementById('leaderboard-body');
+            tbody.innerHTML = '';
+
+            const top10 = allSubmissions.slice(0, 10);
+
+            if (top10.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-slate-400">Tiada rekod data lagi untuk Set 4.</td></tr>`;
+                return;
+            }
+
+            top10.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.className = index % 2 === 0 ? 'bg-slate-50/50' : 'bg-white';
+
+                const mins = Math.floor(item.time / 60).toString().padStart(2, '0');
+                const secs = (item.time % 60).toString().padStart(2, '0');
+
+                let badge = `<span class="font-bold text-slate-500">${index + 1}</span>`;
+                if (index === 0) badge = `<i class="fa-solid fa-crown text-amber-500 text-base"></i>`;
+                else if (index === 1) badge = `<i class="fa-solid fa-medal text-slate-400 text-base"></i>`;
+                else if (index === 2) badge = `<i class="fa-solid fa-medal text-amber-700 text-base"></i>`;
+
+                tr.innerHTML = `
+                    <td class="py-3 px-2 text-center">${badge}</td>
+                    <td class="py-3 px-3 font-semibold text-slate-800">${escapeHtml(item.name || '')}</td>
+                    <td class="py-3 px-3 text-slate-600">${escapeHtml(item.school || '')}</td>
+                    <td class="py-3 px-3 text-center font-bold text-teal-700">${item.score} / 70</td>
+                    <td class="py-3 px-3 text-center text-xs text-slate-500">${mins}:${secs}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function escapeHtml(str) {
+            return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        function openReviewModal() {
+            document.getElementById('review-modal').classList.remove('hidden');
+            renderReviewList();
+        }
+
+        function closeReviewModal() {
+            document.getElementById('review-modal').classList.add('hidden');
+        }
+
+        function renderReviewList() {
+            const filter = document.getElementById('review-filter').value;
+            const container = document.getElementById('review-list');
+            container.innerHTML = '';
+
+            const prefixes = ['A', 'B', 'C', 'D'];
+            let shownCount = 0;
+
+            currentQuestions.forEach((q, idx) => {
+                const userAns = userAnswers[idx];
+                const isCorrect = userAns === q.answer;
+
+                if (filter === 'correct' && !isCorrect) return;
+                if (filter === 'wrong' && isCorrect) return;
+
+                shownCount++;
+
+                const card = document.createElement('div');
+                card.className = `p-4 rounded-xl border ${
+                    isCorrect ? 'bg-emerald-50/50 border-emerald-200' : 'bg-rose-50/50 border-rose-200'
+                }`;
+
+                let statusBadge = isCorrect 
+                    ? `<span class="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-1 rounded-full font-bold"><i class="fa-solid fa-check mr-1"></i> Betul</span>`
+                    : `<span class="bg-rose-100 text-rose-800 text-xs px-2.5 py-1 rounded-full font-bold"><i class="fa-solid fa-xmark mr-1"></i> Salah / Tiada Jawapan</span>`;
+
+                let optionsHtml = q.options.map((opt, oIdx) => {
+                    let style = "bg-white border-slate-200 text-slate-700";
+                    let icon = "";
+
+                    if (oIdx === q.answer) {
+                        style = "bg-emerald-100 border-emerald-400 text-emerald-900 font-semibold";
+                        icon = `<i class="fa-solid fa-circle-check text-emerald-600 ml-auto"></i>`;
+                    }
+                    if (userAns === oIdx && userAns !== q.answer) {
+                        style = "bg-rose-100 border-rose-400 text-rose-900 font-semibold";
+                        icon = `<i class="fa-solid fa-circle-xmark text-rose-600 ml-auto"></i>`;
+                    }
+
+                    return `
+                        <div class="p-2.5 rounded-lg border text-xs flex items-center space-x-2 ${style}">
+                            <span class="font-bold uppercase w-5">${prefixes[oIdx]}.</span>
+                            <span class="flex-grow">${opt}</span>
+                            ${icon}
+                        </div>
+                    `;
+                }).join('');
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-xs font-bold text-slate-500">${q.category} - Soalan ${idx + 1}</span>
+                        ${statusBadge}
+                    </div>
+                    <p class="font-semibold text-slate-800 text-sm mb-3">${q.question}</p>
+                    <div class="space-y-1.5 mb-3">
+                        ${optionsHtml}
+                    </div>
+                    <div class="bg-white/80 p-2.5 rounded-lg border border-slate-200 text-xs text-slate-600">
+                        <span class="font-bold text-slate-700"><i class="fa-regular fa-lightbulb text-amber-500 mr-1"></i> Penerangan:</span> ${q.explanation}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            document.getElementById('review-summary-text').innerText = `Menunjukkan ${shownCount} soalan.`;
+        }
+
+        function resetAndRestart() {
+            stopTimer(); secondsElapsed = 0; currentQuestions = []; userAnswers = []; currentIndex = 0;
+            document.getElementById('review-modal').classList.add('hidden');
+            document.getElementById('screen-result').classList.add('hidden');
+            document.getElementById('screen-start').classList.remove('hidden');
+            document.getElementById('quiz-status-bar').classList.add('hidden');
+        }
+
+        // Attach functions to window scope for HTML inline handlers
+        window.startQuiz = startQuiz;
+        window.navigateQuestion = navigateQuestion;
+        window.selectOption = selectOption;
+        window.openReviewModal = openReviewModal;
+        window.closeReviewModal = closeReviewModal;
+        window.renderReviewList = renderReviewList;
+        window.resetAndRestart = resetAndRestart;
+    </script>
+</body>
+</html>
